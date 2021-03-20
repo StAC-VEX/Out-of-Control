@@ -18,7 +18,8 @@ void auton() {
 }
 
 void control() {
-
+  leftMotor.setVelocity(720 * _controller.Axis3.value(), velocityUnits::dps);
+  rightMotor.setVelocity(720 * _controller.Axis2.value(), velocityUnits::dps);
 }
 
 int main() {
