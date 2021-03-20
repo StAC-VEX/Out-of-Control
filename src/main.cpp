@@ -1,16 +1,20 @@
 #include "vex.h"
 using namespace vex;
 
+//Temporary ports, until actual robot is started.
 controller _controller = controller();
 brain _brain = brain();
 competition comp = competition();
+inertial sensor = inertial(PORT1);
+motor leftMotor = motor(PORT1);
+motor rightMotor = motor(PORT1);
 
 void vexcodeInit() {
-  
+  sensor.calibrate();  
 }
 
 void auton() {
-
+  waitUntil(!sensor.isCalibrating());
 }
 
 void control() {
