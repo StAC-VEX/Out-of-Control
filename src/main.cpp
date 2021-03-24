@@ -5,6 +5,7 @@
  */
 
 #include "vex.h"
+#include <cstdlib>
 using namespace vex;
 
 //Temporary ports, until actual robot is started.
@@ -30,7 +31,7 @@ public:
    * @param degrees The amount of degress the robot will turn.
    */
   void turn(int degrees) {
-
+    
   }
 
   /**
@@ -40,15 +41,16 @@ public:
    */
   void move(int distance) {
 
+  }
+
   /**
    * Moves the robot for a specified amount of time at a specified speed.
    * 
    * @param time The miliseconds (amount of time) that you want the robot to move forward.  
    * @param dps The amount of degrees per second you want the robot to move (positive is forward, negative is backwards).
    */
-  }
   void move(int time, int dps) {
-
+    
   }
 
   /**
@@ -60,6 +62,38 @@ public:
    */
   void intake(int time, int dps, motor* motors) {
 
+  }
+private:
+  void PID(int min, int max, float margin, int desired, double(*independent)(), void(*loop)(int error)) {
+    leftMotor.resetRotation();
+    rightMotor.resetRotation();
+
+    double error = independent();
+    double previousError = 0;
+    const double maxAcceleration = 0.03;
+    while (!(independent() < desired + margin && independent() > desired - margin)) {
+      // Gets the previous error
+      error = independent();
+      double speed = error;
+
+      if (fabs(error - previousError) > maxAcceleration) {
+        //If accelerating
+        if (speed - previousError > 0) speed = previousError - maxAcceleration;
+        else speed = previousError + maxAcceleration;
+      }
+
+      // Caps the error.
+      if (speed > max) speed = max;
+      if (speed < -max) speed = -max;
+      if (speed < min && error > 0) speed = min;
+      if (speed > -min && speed < 0) speed = -min;
+
+      loop(error);
+
+      wait(20, msec);
+      // How far the motor still needs to go.
+      previousError = error;
+    }
   }
 };
 
