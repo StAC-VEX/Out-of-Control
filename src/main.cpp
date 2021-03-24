@@ -13,6 +13,22 @@ void vexcodeInit() {
   sensor.calibrate();  
 }
 
+class Auton { 
+public:
+  void turn(int degrees) {
+
+  }
+  void move(int distance) {
+
+  }
+  void move(int time) {
+
+  }
+  void intake(motor* motors, int time) {
+
+  }
+};
+
 void auton() {
   waitUntil(!sensor.isCalibrating());
 }
