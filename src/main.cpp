@@ -15,6 +15,7 @@ competition comp = competition();
 inertial sensor = inertial(PORT1);
 motor leftMotor = motor(PORT1);
 motor rightMotor = motor(PORT1);
+motor intakeMotor = motor(PORT1);
 
 void vexcodeInit() {
   sensor.calibrate();  
@@ -51,26 +52,40 @@ public:
       rightMotor.spin(directionType::fwd, speed, velocityUnits::dps);
     });
   }
+
   /**
    * Moves the robot for a specified amount of time at a specified speed.
    * 
    * @param time The miliseconds (amount of time) that you want the robot to move forward.  
-   * @param dps The amount of degrees per second you want the robot to move (positive is forward, negative is backwards).
+   * @param _dps The amount of degrees per second you want the robot to move (positive is forward, negative is backwards).
    */
-  
-  void move(int time, int dps) {
-
+  void move(int time, int _dps) {
+    leftMotor.spin(fwd, _dps, dps);
+    rightMotor.spin(fwd, _dps, dps);
+    wait(time, msec);
+    leftMotor.stop(coast);    
+    rightMotor.stop(coast);
   }
 
   /**
    * Intakes the specified motors for a specified amount of time at a specified speed.
-   * 
+   *
    * @param time The miliseconds (amount of time) to spin the motors for.
-   * @param dps The degrees per second to spin the motors at.
+   * @param _dps The degrees per second to spin the motors at.
    * @param motors The list of motors to spin.
    */
-  void intake(int time, int dps, motor* motors) {
+  void intake(int time, int _dps) {
+    motor motors[] = {intakeMotor};
 
+    for (motor _motor : motors) {
+      _motor.spin(fwd, _dps, dps);      
+    }
+
+    wait(time, msec);
+    
+    for (motor _motor : motors) {
+      _motor.stop(coast);
+    }
   }
 private:
 
@@ -108,7 +123,7 @@ private:
 };
 
 void auton() {
-  waitUntil(!sensor.isCalibrating());
+  waitUntil(!sensor.isCalibrating());  
 }
 
 void control() {
