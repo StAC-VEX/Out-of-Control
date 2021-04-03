@@ -12,23 +12,34 @@
 using namespace Syntech;
 using namespace vex;
 
+/**
+ * Initalises the devices (that need to be initalised).
+ */
 void vexcodeInit() {
   Devices::sensor.calibrate();  
 }
 
- void auton() {
+/**
+ * The code that runs for the autunomous.
+ */
+void auton() {
   waitUntil(!Devices::sensor.isCalibrating());
     
   Auton::move(100);
 }
 
+/**
+ * The code that loops for user control.
+ */
 void control() {
   Devices::leftMotor.setVelocity(720 * Devices::_controller.Axis3.value(), velocityUnits::dps);
   Devices::rightMotor.setVelocity(720 * Devices::_controller.Axis2.value(), velocityUnits::dps);
 }  
 
+/**
+ * The origin of the main thread.
+ */
 int main() {
-  // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
 
   Devices::comp.autonomous(auton);

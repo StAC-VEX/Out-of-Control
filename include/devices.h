@@ -1,6 +1,10 @@
 #pragma once
 #include "vex.h" 
 
+/**
+ * The file for the class that holds all of the devices. Motors, sensors, controller, etc.
+ */
+
 namespace Syntech {
 class Devices {
 public:
