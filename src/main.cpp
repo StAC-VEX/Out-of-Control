@@ -1,9 +1,3 @@
-/**
- * The starting off point of the program.
- * 
- * @author Bailey Moir
- */
-
 #include "vex.h"
 #include <cstdlib>
 #include "devices.h"
@@ -11,6 +5,12 @@
 
 using namespace Syntech;
 using namespace vex;
+
+/**
+ * The starting off point of the program.
+ * 
+ * @author Bailey Moir
+ */
 
 /**
  * Initalises the devices (that need to be initalised).
