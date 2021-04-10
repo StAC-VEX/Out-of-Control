@@ -25,7 +25,12 @@ void vexcodeInit() {
 void auton() {
   waitUntil(!Devices::sensor.isCalibrating());
     
-  Auton::move(100);
+  /*
+  * Pick up purple
+  * Pick up oranges
+  * Put purple on top
+  * Dump orange ones, then go to opposite and do the same thing.
+  */
 }
 
 /**
