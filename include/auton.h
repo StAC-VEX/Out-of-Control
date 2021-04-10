@@ -41,7 +41,7 @@ public:
   static void intake(int time, int _dps); 
 private:
   /**
-   * @brief  The proportional function. Everything is in the same unit.
+   * @brief  The proportional and intergral function. Everything is in the same unit.
    * @param  min: The minimum speed that the loop can send.
    * @param  max: The maximum speed that the loop can send.
    * @param  margin: The margin of error.
@@ -50,5 +50,5 @@ private:
    * @param  loop: What is looped every time that affects 'indepedent'
    * @retval None
    */
-  static void P(int min, int max, float margin, int desired, double(*independent)(), void(*loop)(int error)); 
+  static void PI(int min, int max, float margin, int desired, double(*independent)(), void(*loop)(int error)); 
 };};
