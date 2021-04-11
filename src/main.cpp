@@ -46,7 +46,7 @@ void auton() {
   move(-cubeWidth);
   moveSideWays(-31.845);
   moveTimeDistance(cubeWidth, 720);
-  intake(500, 720);
+  intakeUntil(720, []() { return Devices::distanceSensor.isObjectDetected(); });
   // Collected all orange cubes.
   moveTime(100, 720);
   move(-(121.38 - distanceToFront));
@@ -78,7 +78,7 @@ void auton() {
   move(-cubeWidth);
   moveSideWays(31.845);
   moveTimeDistance(cubeWidth, 720);
-  intake(500, 720);
+  intakeUntil(720, []() { return Devices::distanceSensor.isObjectDetected(); });
   // Collected all green cubes.
   moveTime(100, 720);
   move(-(121.38 - distanceToFront));

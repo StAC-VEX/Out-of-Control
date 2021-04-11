@@ -55,7 +55,15 @@ namespace Syntech {
    * @param  _dps: The degrees per second to spin the intakes at.
    * @retval None
    */
-  void intake(int time, int _dps); 
+  void intake(int time, int _dps);
+
+  /**
+   * @brief  Intakes at a specified speed until the boolean function specified returns true.
+   * @param  _dps: The degrees per second to spin the intakes at.
+   * @param  check: The function that returns the boolean value of whether to stop intaking or not.
+   * @retval None
+   */
+  void intakeUntil(int _dps, bool(*check)());
 
   /**
    * @brief  Starts to intake forever, until the motors are told to do otherwise.

@@ -5,6 +5,7 @@ namespace Syntech {
   brain Devices::_brain = brain();
   competition Devices::comp = competition();
   inertial Devices::sensor = inertial(PORT1);
+  distance Devices::distanceSensor = vex::distance(PORT1);
   motor Devices::leftBMotor = motor(PORT1);
   motor Devices::leftFMotor = motor(PORT1);
   motor Devices::rightBMotor = motor(PORT1);
