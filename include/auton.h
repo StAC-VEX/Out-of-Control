@@ -2,27 +2,25 @@
 #include "devices.h"
 
 /**
- * The class that contains all of the autonomous functions.
+ * Contains all of the autonomous functions.
  * 
  * @author Bailey Moir
  */
 
 namespace Syntech {
-class Auton { 
-public:
   /**
    * @brief  Turns the robot a specified amount.
    * @param  degrees: The amount of degress the robot will turn.
    * @retval None
    */
-  static void turn(int degrees); 
+  void turn(int degrees); 
 
   /**
    * @brief  Moves the robot for a specificed distance.
    * @param  distance: How far you want the robot to move and what direction (positive is forward, negative is backwards).
    * @retval None
    */
-  static void move(int distance); 
+  void move(int distance); 
 
   /**
    * @brief  Moves the robot for a specified amount of time at a specified speed.
@@ -30,7 +28,7 @@ public:
    * @param  _dps: The amount of degrees per second you want the robot to move (positive is forward, negative is backwards).
    * @retval None
    */
-  static void move(int time, int _dps); 
+  void move(int time, int _dps); 
 
   /**
    * @brief  Intakes the specified motors for a specified amount of time at a specified speed.
@@ -38,8 +36,8 @@ public:
    * @param  _dps: The degrees per second to spin the motors at.
    * @retval None
    */
-  static void intake(int time, int _dps); 
-private:
+  void intake(int time, int _dps); 
+
   /**
    * @brief  The proportional and intergral function. Everything is in the same unit.
    * @param  min: The minimum speed that the loop can send.
@@ -50,5 +48,5 @@ private:
    * @param  loop: What is looped every time that affects 'indepedent'
    * @retval None
    */
-  static void PI(int min, int max, float margin, int desired, double(*independent)(), void(*loop)(int error)); 
-};};
+  void PI(int min, int max, float margin, int desired, double(*independent)(), void(*loop)(int error)); 
+};

@@ -16,5 +16,6 @@ public:
   static inertial sensor;
   static motor leftMotor;
   static motor rightMotor;
-  static motor intakeMotor;
+  static motor leftIntakeMotor;
+  static motor rightIntakeMotor;
 };};

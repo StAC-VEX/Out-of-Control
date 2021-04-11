@@ -2,9 +2,9 @@
 
 using namespace Syntech;
 
-void Auton::turn(int degrees) {
+void Syntech::turn(int degrees) {
 	Devices::sensor.rotation();
-	Auton::PI(2, 60, 1, degrees, []() { 
+	PI(2, 60, 1, degrees, []() { 
 		return Devices::sensor.rotation(); 
 	}, [](int speed) {
 		Devices::leftMotor.spin(directionType::fwd, speed, velocityUnits::dps);
@@ -12,10 +12,10 @@ void Auton::turn(int degrees) {
 	});
 }
 
-void Auton::move(int distance) {
+void Syntech::move(int distance) {
 	//5 = wheelRadius
 	Devices::leftMotor.resetRotation();
-	Auton::PI(5, 60, 1, distance, []() { 
+	PI(5, 60, 1, distance, []() { 
 		return ((3.14159 * 5) / 360 * Devices::leftMotor.rotation(rotationUnits::deg)); 
 	}, [](int speed) { 
 		Devices::leftMotor.spin(directionType::fwd, speed, velocityUnits::dps);
@@ -23,7 +23,7 @@ void Auton::move(int distance) {
 	});
 }
 
-void Auton::move(int time, int _dps) {
+void Syntech::move(int time, int _dps) {
 	Devices::leftMotor.spin(fwd, _dps, dps);
 	Devices::rightMotor.spin(fwd, _dps, dps);
 	wait(time, msec);
@@ -31,8 +31,8 @@ void Auton::move(int time, int _dps) {
 	Devices::rightMotor.stop(coast);
 }
 
-void Auton::intake(int time, int _dps) {
-	motor motors[] = {Devices::intakeMotor};
+void Syntech::intake(int time, int _dps) {
+	motor motors[] = {Devices::leftIntakeMotor, Devices::rightIntakeMotor};
 
 	for (motor _motor : motors) {
 		_motor.spin(fwd, _dps, dps);      
@@ -45,7 +45,7 @@ void Auton::intake(int time, int _dps) {
 	}
 }
 
-void Auton::PI(int min, int max, float margin, int desired, double(*independent)(), void(*loop)(int error)) {
+void Syntech::PI(int min, int max, float margin, int desired, double(*independent)(), void(*loop)(int error)) {
 	Devices::leftMotor.resetRotation();
 	Devices::rightMotor.resetRotation();
 
