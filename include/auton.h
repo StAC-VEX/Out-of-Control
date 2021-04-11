@@ -31,12 +31,25 @@ namespace Syntech {
   void move(int time, int _dps); 
 
   /**
-   * @brief  Intakes the specified motors for a specified amount of time at a specified speed.
-   * @param  time: The miliseconds (amount of time) to spin the motors for.
-   * @param  _dps: The degrees per second to spin the motors at.
+   * @brief  Intakes for a specified amount of time at a specified speed.
+   * @param  time: The miliseconds (amount of time) to spin the intakes for.
+   * @param  _dps: The degrees per second to spin the intakes at.
    * @retval None
    */
   void intake(int time, int _dps); 
+
+  /**
+   * @brief  Starts to intake forever, until the motors are told to do otherwise.
+   * @param  _dps: The degrees per second to spin the intakes at.
+   * @retval None
+   */
+  void startIntake(int _dps);
+
+  /**
+   * @brief  Stops intaking. Not nescessary for the 'intake(int time, int _dps)' function.
+   * @retval None
+   */
+  void stopIntake();
 
   /**
    * @brief  The proportional and intergral function. Everything is in the same unit.

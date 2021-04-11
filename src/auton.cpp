@@ -2,6 +2,8 @@
 
 using namespace Syntech;
 
+motor intakeMotors[] = {Devices::leftIntakeMotor, Devices::rightIntakeMotor};
+
 void Syntech::turn(int degrees) {
 	Devices::sensor.rotation();
 	PI(2, 60, 1, degrees, []() { 
@@ -32,15 +34,25 @@ void Syntech::move(int time, int _dps) {
 }
 
 void Syntech::intake(int time, int _dps) {
-	motor motors[] = {Devices::leftIntakeMotor, Devices::rightIntakeMotor};
-
-	for (motor _motor : motors) {
+	for (motor _motor : intakeMotors) {
 		_motor.spin(fwd, _dps, dps);      
 	}
 
 	wait(time, msec);
 
-	for (motor _motor : motors) {
+	for (motor _motor : intakeMotors) {
+		_motor.stop(coast);
+	}
+}
+
+void Syntech::startIntake(int _dps) {
+	for (motor _motor : intakeMotors) {
+		_motor.spin(fwd, _dps, dps);      
+	}
+}
+
+void Syntech::stopIntake() {
+	for (motor _motor : intakeMotors) {
 		_motor.stop(coast);
 	}
 }
