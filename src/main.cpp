@@ -37,8 +37,10 @@ void auton() {
  * The code that loops for user control.
  */
 void control() {
-  Devices::leftMotor.setVelocity(720 * Devices::_controller.Axis3.value(), velocityUnits::dps);
-  Devices::rightMotor.setVelocity(720 * Devices::_controller.Axis2.value(), velocityUnits::dps);
+  Devices::leftBMotor.setVelocity(720 * Devices::_controller.Axis3.value(), velocityUnits::dps);
+  Devices::leftFMotor.setVelocity(720 * Devices::_controller.Axis3.value(), velocityUnits::dps);
+  Devices::rightBMotor.setVelocity(720 * Devices::_controller.Axis2.value(), velocityUnits::dps);
+  Devices::rightFMotor.setVelocity(720 * Devices::_controller.Axis2.value(), velocityUnits::dps);
 }  
 
 /**

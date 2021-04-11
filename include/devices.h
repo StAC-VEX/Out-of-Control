@@ -14,8 +14,10 @@ public:
   static brain _brain;
   static competition comp;
   static inertial sensor;
-  static motor leftMotor;
-  static motor rightMotor;
+  static motor leftBMotor;
+  static motor leftFMotor;
+  static motor rightBMotor;
+  static motor rightFMotor;
   static motor leftIntakeMotor;
   static motor rightIntakeMotor;
 };};

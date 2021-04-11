@@ -9,28 +9,73 @@ void Syntech::turn(int degrees) {
 	PI(2, 60, 1, degrees, []() { 
 		return Devices::sensor.rotation(); 
 	}, [](int speed) {
-		Devices::leftMotor.spin(directionType::fwd, speed, velocityUnits::dps);
-		Devices::rightMotor.spin(directionType::rev, speed, velocityUnits::dps);
+		Devices::leftBMotor.spin(directionType::fwd, speed, velocityUnits::dps);
+		Devices::leftFMotor.spin(directionType::fwd, speed, velocityUnits::dps);
+		Devices::rightBMotor.spin(directionType::rev, speed, velocityUnits::dps);
+		Devices::rightFMotor.spin(directionType::rev, speed, velocityUnits::dps);
 	});
 }
 
-void Syntech::move(int distance) {
-	//5 = wheelRadius
-	Devices::leftMotor.resetRotation();
+void Syntech::move(float distance) {
+	Devices::leftBMotor.resetRotation();
 	PI(5, 60, 1, distance, []() { 
-		return ((3.14159 * 5) / 360 * Devices::leftMotor.rotation(rotationUnits::deg)); 
+		// C		= πd
+		// Length	= πd * degrees / 360
+		return 3.14159 * wheelDiameter * (Devices::leftBMotor.rotation(rotationUnits::deg) / 360);
 	}, [](int speed) { 
-		Devices::leftMotor.spin(directionType::fwd, speed, velocityUnits::dps);
-		Devices::rightMotor.spin(directionType::fwd, speed, velocityUnits::dps);
+		Devices::leftBMotor.spin(directionType::fwd, speed, velocityUnits::dps);
+		Devices::leftFMotor.spin(directionType::fwd, speed, velocityUnits::dps);
+		Devices::rightBMotor.spin(directionType::fwd, speed, velocityUnits::dps);
+		Devices::rightFMotor.spin(directionType::fwd, speed, velocityUnits::dps);
 	});
 }
 
-void Syntech::move(int time, int _dps) {
-	Devices::leftMotor.spin(fwd, _dps, dps);
-	Devices::rightMotor.spin(fwd, _dps, dps);
+void Syntech::moveSideWays(float distance) {
+	// A lot of this function is subject to change.
+	Devices::leftBMotor.resetRotation();
+	PI(5, 60, 1, distance, []() { 
+		// C		= πd
+		// Length	= πd * degrees / 360
+		return 3.14159 * wheelDiameter * (Devices::leftBMotor.rotation(rotationUnits::deg) / 360);
+	}, [](int speed) { 
+		Devices::leftBMotor.spin(directionType::fwd, speed, velocityUnits::dps);
+		Devices::leftFMotor.spin(directionType::rev, speed, velocityUnits::dps);
+		Devices::rightBMotor.spin(directionType::fwd, speed, velocityUnits::dps);
+		Devices::rightFMotor.spin(directionType::rev, speed, velocityUnits::dps);
+	});
+}
+
+void Syntech::moveTime(int time, int _dps) {
+	Devices::leftBMotor.spin(fwd, _dps, dps);
+	Devices::leftFMotor.spin(fwd, _dps, dps);
+	Devices::rightFMotor.spin(fwd, _dps, dps);
+	Devices::rightBMotor.spin(fwd, _dps, dps);
+
 	wait(time, msec);
-	Devices::leftMotor.stop(coast);    
-	Devices::rightMotor.stop(coast);
+	
+	Devices::leftBMotor.stop(coast);    
+	Devices::leftFMotor.stop(coast);    
+	Devices::rightBMotor.stop(coast);
+	Devices::rightFMotor.stop(coast);
+}
+
+void Syntech::moveTimeDistance(float roughDistance, int _dps) {
+	Devices::leftBMotor.spin(fwd, _dps, dps);
+	Devices::leftFMotor.spin(fwd, _dps, dps);
+	Devices::rightBMotor.spin(fwd, _dps, dps);
+	Devices::rightFMotor.spin(fwd, _dps, dps);
+
+	// distance		= πd * degrees / 360
+	// degrees		= (360 * distance) / πd 
+	// degrees/_dps	= s
+	// s			= (360 * distance) / πd * _dps
+	wait((360 * roughDistance) / (3.14159 * wheelDiameter * _dps) + 0.3, sec);
+
+	Devices::leftBMotor.stop(coast);    
+	Devices::leftFMotor.stop(coast);    
+	Devices::rightBMotor.stop(coast);
+	Devices::rightFMotor.stop(coast);
+
 }
 
 void Syntech::intake(int time, int _dps) {
@@ -57,10 +102,7 @@ void Syntech::stopIntake() {
 	}
 }
 
-void Syntech::PI(int min, int max, float margin, int desired, double(*independent)(), void(*loop)(int error)) {
-	Devices::leftMotor.resetRotation();
-	Devices::rightMotor.resetRotation();
-
+void Syntech::PI(int min, int max, float margin, float desired, double(*independent)(), void(*loop)(int error)) {
 	double error = desired - independent();
 	double previousError = 0;
 	const double maxAcceleration = 0.03;

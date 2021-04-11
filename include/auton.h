@@ -8,6 +8,10 @@
  */
 
 namespace Syntech {
+  const float distanceToFront = 0;
+  const float wheelDiameter = 0;
+  const float cubeWidth = 13.97;
+
   /**
    * @brief  Turns the robot a specified amount.
    * @param  degrees: The amount of degress the robot will turn.
@@ -17,10 +21,25 @@ namespace Syntech {
 
   /**
    * @brief  Moves the robot for a specificed distance.
-   * @param  distance: How far you want the robot to move and what direction (positive is forward, negative is backwards).
+   * @param  distance: Centimeters. How far you want the robot to move and what direction (positive is forward, negative is backwards).
    * @retval None
    */
-  void move(int distance); 
+  void move(float distance); 
+
+  /**
+   * @brief  Moves the robot sideways for a specificed distance.
+   * @param  distance: Centimeters. How far you want the robot to move and what direction (positive is right, negative is left).
+   * @retval None
+   */
+  void moveSideWays(float distance);
+
+  /**
+   * @brief  Moves the robot based an amount of time, no P, I, or D, based on an estimated distance.
+   * @param  roughDistance: Centimeters. The estimated distance the robot should travel. 
+   * @param  _dps: The amount of degrees per second you want the robot to move. MUST BE POSITIVE.
+   * @retval None
+   */
+  void moveTimeDistance(float roughDistance, int _dps); 
 
   /**
    * @brief  Moves the robot for a specified amount of time at a specified speed.
@@ -28,7 +47,7 @@ namespace Syntech {
    * @param  _dps: The amount of degrees per second you want the robot to move (positive is forward, negative is backwards).
    * @retval None
    */
-  void move(int time, int _dps); 
+  void moveTime(int time, int _dps); 
 
   /**
    * @brief  Intakes for a specified amount of time at a specified speed.
@@ -61,5 +80,5 @@ namespace Syntech {
    * @param  loop: What is looped every time that affects 'indepedent'
    * @retval None
    */
-  void PI(int min, int max, float margin, int desired, double(*independent)(), void(*loop)(int error)); 
+  void PI(int min, int max, float margin, float desired, double(*independent)(), void(*loop)(int error)); 
 };
