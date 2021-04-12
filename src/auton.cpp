@@ -90,6 +90,18 @@ void Syntech::intake(int time, int _dps) {
 	}
 }
 
+void Syntech::intakeUntil(int _dps, bool(*check)()) {
+	for (motor _motor : intakeMotors) {
+		_motor.spin(fwd, _dps, dps);      
+	}
+
+	waitUntil(check());
+
+	for (motor _motor : intakeMotors) {
+		_motor.stop(coast);
+	}
+}
+
 void Syntech::startIntake(int _dps) {
 	for (motor _motor : intakeMotors) {
 		_motor.spin(fwd, _dps, dps);      
