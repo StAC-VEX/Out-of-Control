@@ -11,6 +11,7 @@ namespace Syntech {
   const float distanceToFront = 0;
   const float wheelDiameter = 0;
   const float cubeWidth = 13.97;
+  const float tileSize = 60.69;
 
   /**
    * @brief  Turns the robot a specified amount.

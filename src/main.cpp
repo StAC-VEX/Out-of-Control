@@ -32,68 +32,69 @@ void auton() {
   * Dump orange ones, then go to opposite and do the same thing.
   */ 
   startIntake(720);
-  moveTime(1500, 720);
+  moveTime(1000, 720);
   stopIntake();
-  //Collected first purple cube,
-  move(-(60.69 - distanceToFront));
+  // Collected first purple cube,
+  move(-(tileSize / 2 + tileSize / 6 - distanceToFront));
   turn(-90);
-  moveTimeDistance(60.69 - distanceToFront, 720);
+  moveTimeDistance(tileSize / 2 - distanceToFront, 720);
   intake(500, 720);
   move(-cubeWidth);
-  moveSideWays(-31.845);
+  moveSideWays(-cubeWidth * 1.5);
   moveTimeDistance(cubeWidth, 720);
   intake(500, 720);
   move(-cubeWidth);
-  moveSideWays(-31.845);
+  moveSideWays(-cubeWidth);
   moveTimeDistance(cubeWidth, 720);
   intakeUntil(720, []() { return Devices::distanceSensor.isObjectDetected(); });
   // Collected all orange cubes.
-  moveTime(100, 720);
-  move(-(121.38 - distanceToFront));
+  moveTime(100, 720); // Aligns to wall
+  move(-(tileSize * 1.27 - distanceToFront));
   turn(45);
-  move(-64.37);
+  move(-sqrt(pow(tileSize * 0.73, 2) + pow(tileSize * 0.73, 2)));
   intake(1500, 720);
   // Purple cube deposited.
-  move(64.37);
+  move(sqrt(pow(tileSize * 0.73, 2) + pow(tileSize * 0.73, 2)));
   turn(45);
-  move(262.76);
+  move(tileSize * 2 + cubeWidth * 3);
   turn(90);
   startIntake(-720);
-  move(-80.69);
+  move(-(tileSize * 2 - tileSize * 0.23));
   stopIntake();
   // Orange cubes deposited.
   turn(90);
   startIntake(720);
-  moveTimeDistance(161.725 - cubeWidth, 720);
+  moveTimeDistance(tileSize * 2 - cubeWidth / 2, 720);
   stopIntake();
   // Next purple cube collected.
-  move(-60.69);
-  turn(90);
-  moveTimeDistance(60.69 - distanceToFront, 720);
+  moveTime(100, 720); // Aligns to wall
+  move(-(tileSize / 2 + tileSize / 4));
+  turn(-90);
+  moveTimeDistance(tileSize / 2 - distanceToFront, 720);
   intake(500, 720);
   move(-cubeWidth);
-  moveSideWays(31.845);
+  moveSideWays(cubeWidth * 1.5);
   moveTimeDistance(cubeWidth, 720);
   intake(500, 720);
   move(-cubeWidth);
-  moveSideWays(31.845);
+  moveSideWays(cubeWidth * 1.5);
   moveTimeDistance(cubeWidth, 720);
   intakeUntil(720, []() { return Devices::distanceSensor.isObjectDetected(); });
   // Collected all green cubes.
-  moveTime(100, 720);
-  move(-(121.38 - distanceToFront));
+  moveTime(100, 720); // Alings to wall
+  move(-(tileSize * 1.27 - distanceToFront));
   turn(-45);
-  move(-64.37);
+  move(-sqrt(pow(tileSize * 0.73, 2) + pow(tileSize * 0.73, 2)));
   intake(1500, 720);
   // Last purple cube deposited.
-  move(64.37);
+  move(sqrt(pow(tileSize * 0.73, 2) + pow(tileSize * 0.73, 2)));
   turn(-45);
-  move(262.76);
+  move(tileSize * 2.75 + cubeWidth * 1.5);
   turn(-90);
   startIntake(-720);
   moveTime(5000, -720);
   stopIntake();
-  //Everything deposited.
+  // Everything deposited.
 
 }
 
