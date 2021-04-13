@@ -6,7 +6,7 @@ motor intakeMotors[] = {Devices::leftIntakeMotor, Devices::rightIntakeMotor};
 
 void Syntech::turn(int degrees) {
 	Devices::sensor.rotation();
-	PI(2, 60, 1, degrees, []() { 
+	P(2, 60, 1, degrees, []() { 
 		return Devices::sensor.rotation(); 
 	}, [](int speed) {
 		Devices::leftBMotor.spin(directionType::fwd, speed, velocityUnits::dps);
@@ -18,7 +18,7 @@ void Syntech::turn(int degrees) {
 
 void Syntech::move(float distance) {
 	Devices::leftBMotor.resetRotation();
-	PI(5, 60, 1, distance, []() { 
+	P(5, 60, 1, distance, []() { 
 		// C		= πd
 		// Length	= πd * degrees / 360
 		return 3.14159 * wheelDiameter * (Devices::leftBMotor.rotation(rotationUnits::deg) / 360);
@@ -33,7 +33,7 @@ void Syntech::move(float distance) {
 void Syntech::moveSideWays(float distance) {
 	// A lot of this function is subject to change.
 	Devices::leftBMotor.resetRotation();
-	PI(5, 60, 1, distance, []() { 
+	P(5, 60, 1, distance, []() { 
 		// C		= πd
 		// Length	= πd * degrees / 360
 		return 3.14159 * wheelDiameter * (Devices::leftBMotor.rotation(rotationUnits::deg) / 360);
@@ -90,6 +90,18 @@ void Syntech::intake(int time, int _dps) {
 	}
 }
 
+void Syntech::intakeUntil(int _dps, bool(*check)()) {
+	for (motor _motor : intakeMotors) {
+		_motor.spin(fwd, _dps, dps);      
+	}
+
+	waitUntil(check());
+
+	for (motor _motor : intakeMotors) {
+		_motor.stop(coast);
+	}
+}
+
 void Syntech::startIntake(int _dps) {
 	for (motor _motor : intakeMotors) {
 		_motor.spin(fwd, _dps, dps);      
@@ -102,14 +114,15 @@ void Syntech::stopIntake() {
 	}
 }
 
-void Syntech::PI(int min, int max, float margin, float desired, double(*independent)(), void(*loop)(int error)) {
+void Syntech::P(int min, int max, float margin, float desired, double(*independent)(), void(*loop)(int error)) {
 	double error = desired - independent();
 	double previousError = 0;
 	const double maxAcceleration = 0.03;
+	const float kP = 1;
 	while (!(independent() < desired + margin && independent() > desired - margin)) {
 		// Gets the previous error
 		error = desired - independent();
-		double speed = error;
+		double speed = error * kP;
 
 		if (fabs(error - previousError) > maxAcceleration) {
 			//If accelerating
