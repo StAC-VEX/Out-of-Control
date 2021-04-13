@@ -88,5 +88,5 @@ namespace Syntech {
    * @param  loop: What is looped every time that affects 'indepedent'
    * @retval None
    */
-  void PI(int min, int max, float margin, float desired, double(*independent)(), void(*loop)(int error)); 
+  void P(int min, int max, float margin, float desired, double(*independent)(), void(*loop)(int error)); 
 };
