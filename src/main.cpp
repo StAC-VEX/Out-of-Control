@@ -1,6 +1,5 @@
 #include "vex.h"
 #include <cstdlib>
-#include "devices.h"
 #include "auton.h"
 
 using namespace Syntech;
