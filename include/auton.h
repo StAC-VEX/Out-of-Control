@@ -1,5 +1,6 @@
 #pragma once
 #include "devices.h"
+#include "_time.h"
 
 /**
  * Contains all of the autonomous functions.
@@ -87,7 +88,20 @@ namespace Syntech {
    * @param  desired: Where the independent variable should be when the proportional ends.
    * @param  independent: The variable that is changing over time.
    * @param  loop: What is looped every time that affects 'indepedent'
+   * @param  maxAcceleration: The maximum speed that the proportional can accelerate. Units are {general unit} per second.
    * @retval None
    */
-  void P(int min, int max, float margin, float desired, double(*independent)(), void(*loop)(int error)); 
+  void P(const int min, const int max, const float margin, const float desired, double(*independent)(), void(*loop)(int error), const double maxAcceleration); 
+  
+  /**
+   * @brief  The proportional and intergral function. Everything is in the same unit.
+   * @param  min: The minimum speed that the loop can send.
+   * @param  max: The maximum speed that the loop can send.
+   * @param  margin: The margin of error.
+   * @param  desired: Where the independent variable should be when the proportional ends.
+   * @param  independent: The variable that is changing over time.
+   * @param  loop: What is looped every time that affects 'indepedent'
+   * @retval None
+   */
+  void P(const int min, const int max, const float margin, const float desired, double(*independent)(), void(*loop)(int error)); 
 };

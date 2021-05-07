@@ -1,0 +1,15 @@
+{
+    "files.associations": {
+        "atomic": "c",
+        "memory": "c",
+        "devices.h": "c",
+        "vex.h": "c",
+        "ios": "cpp",
+        "istream": "cpp",
+        "ostream": "cpp",
+        "xstring": "cpp",
+        "_time.h": "c",
+        "xlocnum": "cpp",
+        "*.tcc": "cpp"
+    }
+}

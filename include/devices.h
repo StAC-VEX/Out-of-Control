@@ -7,8 +7,7 @@
  * @author Bailey Moir
  */
 
-namespace Syntech {
-class Devices {
+namespace Syntech { class Devices {
 public:
   static controller _controller;
   static brain _brain;

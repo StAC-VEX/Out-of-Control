@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include "devices.h"
 #include "auton.h"
+#include "_time.h"
 
 using namespace Syntech;
 using namespace vex;
@@ -16,7 +17,9 @@ using namespace vex;
  * Initalises the devices (that need to be initalised).
  */
 void vexcodeInit() {
-  Devices::sensor.calibrate();  
+  Devices::sensor.calibrate();
+
+  Time::init();
 }
 
 /**

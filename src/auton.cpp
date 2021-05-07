@@ -27,7 +27,7 @@ void Syntech::move(float distance) {
 		Devices::leftFMotor.spin(directionType::fwd, speed, velocityUnits::dps);
 		Devices::rightBMotor.spin(directionType::fwd, speed, velocityUnits::dps);
 		Devices::rightFMotor.spin(directionType::fwd, speed, velocityUnits::dps);
-	});
+	}, 10);
 }
 
 void Syntech::moveSideWays(float distance) {
@@ -42,7 +42,7 @@ void Syntech::moveSideWays(float distance) {
 		Devices::leftFMotor.spin(directionType::rev, speed, velocityUnits::dps);
 		Devices::rightBMotor.spin(directionType::fwd, speed, velocityUnits::dps);
 		Devices::rightFMotor.spin(directionType::rev, speed, velocityUnits::dps);
-	});
+	}, 10);
 }
 
 void Syntech::moveTime(int time, int _dps) {
@@ -114,26 +114,46 @@ void Syntech::stopIntake() {
 	}
 }
 
-void Syntech::P(int min, int max, float margin, float desired, double(*independent)(), void(*loop)(int error)) {
-	double error = desired - independent();
+void Syntech::P(const int min, const int max, const float margin, const float desired, double(*independent)(), void(*loop)(int error), const double maxAcceleration) {
 	double previousError = 0;
-	const double maxAcceleration = 0.03;
 	const float kP = 1;
 	while (!(independent() < desired + margin && independent() > desired - margin)) {
 		// Gets the previous error
-		error = desired - independent();
+		double error = desired - independent();
 		double speed = error * kP;
 
-		if (fabs(error - previousError) > maxAcceleration) {
+		if (fabs(error - previousError) / Time::getTime() > maxAcceleration) {
 			//If accelerating
 			if (speed - previousError > 0) speed = (previousError - maxAcceleration);
 			else speed = previousError + maxAcceleration;
 		}
+		
+		// Caps the error.
+		if (speed > max) speed = max;
+		if (speed < -max) speed = -max;
+		if (speed < min && speed > 0) speed = min;
+		if (speed > -min && speed < 0) speed = -min;
+
+		loop(speed);
+
+		wait(20, msec);
+		// How far the motor still needs to go.
+		previousError = desired - error;
+	}
+}
+
+void Syntech::P(const int min, const int max, const float margin, const float desired, double(*independent)(), void(*loop)(int error)) {
+	double previousError = 0;
+	const float kP = 1;
+	while (!(independent() < desired + margin && independent() > desired - margin)) {
+		// Gets the previous error
+		double error = desired - independent();
+		double speed = error * kP;		
 
 		// Caps the error.
 		if (speed > max) speed = max;
 		if (speed < -max) speed = -max;
-		if (speed < min && error > 0) speed = min;
+		if (speed < min && speed > 0) speed = min;
 		if (speed > -min && speed < 0) speed = -min;
 
 		loop(speed);
