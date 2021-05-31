@@ -1,11 +1,12 @@
 #pragma once
+#include "vex.h"
 
 namespace Syntech { class Time {
 public:
-    static double deltaTime;
-    static long last_time;
+	static double deltaTime;
+	static long last_time;
 
-	static vex::timer timer;
+	static vex::timer m_timer;
 
 	/**
 	 * Initiates the timer.

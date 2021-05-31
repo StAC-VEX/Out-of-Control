@@ -10,6 +10,7 @@
         "xstring": "cpp",
         "_time.h": "c",
         "xlocnum": "cpp",
-        "*.tcc": "cpp"
+        "*.tcc": "cpp",
+        "functional": "cpp"
     }
 }

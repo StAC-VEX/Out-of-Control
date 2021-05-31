@@ -17,6 +17,6 @@ public:
   static motor leftFMotor;
   static motor rightBMotor;
   static motor rightFMotor;
-  static motor leftIntakeMotor;
-  static motor rightIntakeMotor;
+  static motor clawMotor;
+  static motor armMotor;
 };};

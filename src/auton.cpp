@@ -2,47 +2,51 @@
 
 using namespace Syntech;
 
-motor intakeMotors[] = {Devices::leftIntakeMotor, Devices::rightIntakeMotor};
-
-void Syntech::turn(int degrees) {
-	Devices::sensor.rotation();
-	P(2, 60, 1, degrees, []() { 
+void Syntech::turn(const int degrees, const float efficiency) {
+	/*Devices::sensor.resetRotation();
+	P(2.0, 1, 60, 0.5, degrees, []() { 
 		return Devices::sensor.rotation(); 
-	}, [](int speed) {
+	}, [](int speed, float efficiency) {
+		Devices::leftBMotor.spin(directionType::fwd, speed * efficiency, velocityUnits::dps);
+		Devices::leftFMotor.spin(directionType::fwd, speed * efficiency, velocityUnits::dps);
+		Devices::rightBMotor.spin(directionType::rev, speed * efficiency, velocityUnits::dps);
+		Devices::rightFMotor.spin(directionType::rev, speed * efficiency, velocityUnits::dps);
+	});*/
+  Devices::leftBMotor.resetRotation();
+	P(efficiency, 90, 360, 0.5, degrees, []() { 
+		return (3.14159 * wheelDiameter * (Devices::leftBMotor.rotation(rotationUnits::deg) / 360)) / (3.14159 * turnDiameter) * 360;
+	}, [](double speed) {
+    Devices::_brain.Screen.newLine();
+    Devices::_brain.Screen.print(speed);
 		Devices::leftBMotor.spin(directionType::fwd, speed, velocityUnits::dps);
 		Devices::leftFMotor.spin(directionType::fwd, speed, velocityUnits::dps);
 		Devices::rightBMotor.spin(directionType::rev, speed, velocityUnits::dps);
 		Devices::rightFMotor.spin(directionType::rev, speed, velocityUnits::dps);
-	});
+	}, []{
+		Devices::leftBMotor.stop(coast);
+		Devices::leftFMotor.stop(coast);
+		Devices::rightBMotor.stop(coast);
+		Devices::rightFMotor.stop(coast);
+  });
 }
 
-void Syntech::move(float distance) {
+void Syntech::move(float distance, float efficiency) {
 	Devices::leftBMotor.resetRotation();
-	P(5, 60, 1, distance, []() { 
+	P(efficiency * 10, 10, 720, 0.5, distance, []() { 
 		// C		= πd
 		// Length	= πd * degrees / 360
 		return 3.14159 * wheelDiameter * (Devices::leftBMotor.rotation(rotationUnits::deg) / 360);
-	}, [](int speed) { 
+	}, [](double speed) {
 		Devices::leftBMotor.spin(directionType::fwd, speed, velocityUnits::dps);
 		Devices::leftFMotor.spin(directionType::fwd, speed, velocityUnits::dps);
 		Devices::rightBMotor.spin(directionType::fwd, speed, velocityUnits::dps);
 		Devices::rightFMotor.spin(directionType::fwd, speed, velocityUnits::dps);
-	}, 10);
-}
-
-void Syntech::moveSideWays(float distance) {
-	// A lot of this function is subject to change.
-	Devices::leftBMotor.resetRotation();
-	P(5, 60, 1, distance, []() { 
-		// C		= πd
-		// Length	= πd * degrees / 360
-		return 3.14159 * wheelDiameter * (Devices::leftBMotor.rotation(rotationUnits::deg) / 360);
-	}, [](int speed) { 
-		Devices::leftBMotor.spin(directionType::fwd, speed, velocityUnits::dps);
-		Devices::leftFMotor.spin(directionType::rev, speed, velocityUnits::dps);
-		Devices::rightBMotor.spin(directionType::fwd, speed, velocityUnits::dps);
-		Devices::rightFMotor.spin(directionType::rev, speed, velocityUnits::dps);
-	}, 10);
+	}, []{
+		Devices::leftBMotor.stop(coast);
+		Devices::leftFMotor.stop(coast);
+		Devices::rightBMotor.stop(coast);
+		Devices::rightFMotor.stop(coast);
+  });
 }
 
 void Syntech::moveTime(int time, int _dps) {
@@ -78,88 +82,52 @@ void Syntech::moveTimeDistance(float roughDistance, int _dps) {
 
 }
 
-void Syntech::intake(int time, int _dps) {
-	for (motor _motor : intakeMotors) {
-		_motor.spin(fwd, _dps, dps);      
-	}
+void claw(int _dps) {
+	Devices::clawMotor.spin(fwd, _dps, dps); 
+}
+
+void stopClaw() {
+	Devices::clawMotor.stop(coast);
+}
+
+void Syntech::claw(int time, int _dps) {
+	Devices::clawMotor.spin(fwd, _dps, dps); 
 
 	wait(time, msec);
 
-	for (motor _motor : intakeMotors) {
-		_motor.stop(coast);
-	}
+	Devices::clawMotor.stop(coast);
 }
 
-void Syntech::intakeUntil(int _dps, bool(*check)()) {
-	for (motor _motor : intakeMotors) {
-		_motor.spin(fwd, _dps, dps);      
-	}
-
-	waitUntil(check());
-
-	for (motor _motor : intakeMotors) {
-		_motor.stop(coast);
-	}
+void arm(int _dps) {
+	Devices::armMotor.spin(fwd, _dps, dps); 
 }
 
-void Syntech::startIntake(int _dps) {
-	for (motor _motor : intakeMotors) {
-		_motor.spin(fwd, _dps, dps);      
-	}
+void stopArm() {
+	Devices::armMotor.stop(coast);
 }
 
-void Syntech::stopIntake() {
-	for (motor _motor : intakeMotors) {
-		_motor.stop(coast);
-	}
+void Syntech::arm(int time, int _dps) {
+	arm(_dps);
+
+	wait(time, msec);
+
+  stopArm();
 }
 
-void Syntech::P(const int min, const int max, const float margin, const float desired, double(*independent)(), void(*loop)(int error), const double maxAcceleration) {
-	double previousError = 0;
-	const float kP = 1;
-	while (!(independent() < desired + margin && independent() > desired - margin)) {
-		// Gets the previous error
-		double error = desired - independent();
-		double speed = error * kP;
+void Syntech::P(const float efficiency, const int min, const int max, const float margin, const float desired, double(*independent)(), void(*loop)(double error), void(*stop)()) {
+	while (!(desired - independent() < margin / 2 && desired - independent() > -margin / 2)) {
+    // Gets the previous error
+    double error = (desired - independent()) * efficiency;
 
-		if (fabs(error - previousError) / Time::getTime() > maxAcceleration) {
-			//If accelerating
-			if (speed - previousError > 0) speed = (previousError - maxAcceleration);
-			else speed = previousError + maxAcceleration;
-		}
-		
-		// Caps the error.
-		if (speed > max) speed = max;
-		if (speed < -max) speed = -max;
-		if (speed < min && speed > 0) speed = min;
-		if (speed > -min && speed < 0) speed = -min;
+    // Caps the error.
+    if (error > max) error = max;
+    if (error < -max) error = -max;
+    if (error < min && error > 0) error = min;
+    if (error > -min && error < 0) error = -min;
 
-		loop(speed);
+    loop(error);
 
-		wait(20, msec);
-		// How far the motor still needs to go.
-		previousError = desired - error;
+    wait(20, msec);
 	}
-}
-
-void Syntech::P(const int min, const int max, const float margin, const float desired, double(*independent)(), void(*loop)(int error)) {
-	double previousError = 0;
-	const float kP = 1;
-	while (!(independent() < desired + margin && independent() > desired - margin)) {
-		// Gets the previous error
-		double error = desired - independent();
-		double speed = error * kP;		
-
-		// Caps the error.
-		if (speed > max) speed = max;
-		if (speed < -max) speed = -max;
-		if (speed < min && speed > 0) speed = min;
-		if (speed > -min && speed < 0) speed = -min;
-
-		loop(speed);
-
-		wait(20, msec);
-		// How far the motor still needs to go.
-		previousError = desired - error;
-	}
+  stop();  
 }
